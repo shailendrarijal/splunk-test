@@ -17,15 +17,8 @@ const ServerComposer = () => {
         setCpuModel(event.target.value as CPUModel);
     }
 
-    // format memory size to add commas
-    const formatMemorySizeToNumber = (memorySize: string): string => {
-        const commaAddedMemorySize = memorySize.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return commaAddedMemorySize
-    }
-
     const handleMemorySizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        setMemorySize(formatMemorySizeToNumber(value));
+        setMemorySize(event.target.value);
     };
 
     // trigger error if memory size input is invalid
@@ -49,7 +42,16 @@ const ServerComposer = () => {
     }
 
     const handleMemorySizeonBlur = () => {
-        const parsedMemorySize = parseInt(memorySize.replace(/,/g, ''));
+        const commaRemovedMemorySize = memorySize.replace(/,/g, '');
+        
+        if (!/^\d+$/.test(commaRemovedMemorySize)) {
+            setMemorySizeInputError(true);
+            setmemorySizeErrorMessage(errorMessages.MEMORY_INVALID_INPUT);
+            return;
+        }
+        
+        const parsedMemorySize = parseInt(commaRemovedMemorySize);
+
         if (checkMemorySizeError(parsedMemorySize)) return;
     }
 
@@ -134,7 +136,7 @@ const ServerComposer = () => {
                                         endAdornment: <InputAdornment position="end">MB</InputAdornment>,
                                     }
                                 }}
-                                
+
                             />
                         </Box>
                     </Grid>

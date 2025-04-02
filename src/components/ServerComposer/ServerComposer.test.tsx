@@ -57,6 +57,17 @@ describe('ServerComposer Component', () => {
         expect(screen.getByText(errorMessages.MEMORY_SIZE_MAX)).toBeInTheDocument();
     });
 
+    // input validation test - onBlur - input should only contain numbers
+    it('displays correct error message for more than max memory size input', () => {
+        const { memoryInput } = renderComponent();
+
+        render(<ServerComposer />);
+        fireEvent.change(memoryInput, { target: { value: '4096gh' } });
+        fireEvent.blur(memoryInput);
+        expect(screen.getByText(errorMessages.MEMORY_INVALID_INPUT)).toBeInTheDocument();
+    });
+
+    
     // input validation test - on submit
     it('displays correct error message submit button is clicked when error is present', () => {
         const { memoryInput, submitButton } = renderComponent();
